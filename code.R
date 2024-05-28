@@ -254,3 +254,11 @@ for (feature in features) {
 write.csv(outliers_info, "output/outliers_info.csv", row.names = FALSE)
 
 print(outliers_info)
+
+
+#change outliers values
+covid_data$Deaths_From_Smoking[c(27, 52)] <- 227477.4
+covid_data$Population_Density[c(99)] <- 1718
+
+
+
