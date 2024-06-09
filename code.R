@@ -6,9 +6,12 @@ library(ggplot2)
 #import data
 covid_data <- read.csv("data/covid_processed.csv")
 
+#create an output folder
+if (!dir.exists("output")) {
+  dir.create("output")
+}
 #data processing
 names(covid_data) <- gsub(" ", "_", names(covid_data))
-print(names(covid_data))
 #cahnge data columns
 # Assuming your dataframe is named df
 names(covid_data) <- c(
@@ -245,20 +248,32 @@ for (feature in features) {
   
   outlier_indices <- which(covid_data[[feature]] < lower_bound | covid_data[[feature]] > upper_bound)
   outlier_values <- covid_data[[feature]][outlier_indices]
-  
   deviations <- ifelse(outlier_values < lower_bound, abs(outlier_values - lower_bound), abs(outlier_values - upper_bound))
   
-  outliers_info <- rbind(outliers_info, data.frame(Feature = feature, Outlier_Index = outlier_indices, Outlier_Value = outlier_values, Deviation = deviations, stringsAsFactors = FALSE))
+  # Create a temporary data frame only if there are outliers
+  if (length(outlier_indices) > 0) {
+    temp_df <- data.frame(Feature = rep(feature, length(outlier_indices)), 
+                          Outlier_Index = outlier_indices, 
+                          Outlier_Value = outlier_values, 
+                          Deviation = deviations, 
+                          stringsAsFactors = FALSE)
+  } else {
+    # Insert NA to maintain the structure in case there are no outliers
+    temp_df <- data.frame(Feature = feature, 
+                          Outlier_Index = NA, 
+                          Outlier_Value = NA, 
+                          Deviation = NA, 
+                          stringsAsFactors = FALSE)
+  }
+  
+  outliers_info <- rbind(outliers_info, temp_df)
 }
 
-write.csv(outliers_info, "output/outliers_info.csv", row.names = FALSE)
 
-print(outliers_info)
 
 
 #change outliers values
 covid_data$Deaths_From_Smoking[c(27, 52)] <- 227477.4
 covid_data$Population_Density[c(99)] <- 1718
-
 
 
