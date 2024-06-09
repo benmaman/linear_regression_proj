@@ -4,7 +4,7 @@ library(e1071)  # For skewness calculation
 library(ggplot2)
 
 #import data
-covid_data <- read.csv("data/covid_processed.csv")
+covid_data <- read.csv("covid_processed.csv")
 
 #create an output folder
 if (!dir.exists("output")) {
