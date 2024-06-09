@@ -2,10 +2,11 @@
 library(dplyr)
 library(e1071)  # For skewness calculation
 library(ggplot2)
+library(data.table)
 
 #import data
-covid_data <- read.csv("covid_processed.csv")
-
+covid_data <- fread("covid.csv", select = 1:11)
+names(covid_data)
 #create an output folder
 if (!dir.exists("output")) {
   dir.create("output")
